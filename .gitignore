@@ -1,0 +1,15 @@
+assets/images/*
+assets/video/*
+assets/audio/*
+render/*
+!**/.gitkeep
+*.mp4
+*.mov
+*.wav
+*.mp3
+.DS_Store
+node_modules/
+.npmcache/
+demo-a/frames/
+render/demo-b-frames/
+.gh_token

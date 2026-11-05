@@ -1,0 +1,56 @@
+name: render
+
+on:
+  workflow_dispatch:
+    inputs:
+      demo:
+        description: "渲染哪条"
+        type: choice
+        options: [both, a, b]
+        default: both
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 定位 Chrome
+        run: |
+          CHROME=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
+          echo "CHROME_PATH=$CHROME" >> "$GITHUB_ENV"
+          "$CHROME" --version
+          ffmpeg -version | head -1
+
+      - name: 安装 demo-a 依赖
+        if: inputs.demo == 'both' || inputs.demo == 'a'
+        working-directory: demo-a
+        run: npm install --no-audit --no-fund
+
+      - name: 渲染 demo-a
+        if: inputs.demo == 'both' || inputs.demo == 'a'
+        working-directory: demo-a
+        run: node render.mjs
+
+      - name: 安装 demo-b 依赖
+        if: inputs.demo == 'both' || inputs.demo == 'b'
+        working-directory: demo-b
+        run: npm install --no-audit --no-fund
+
+      - name: 渲染 demo-b
+        if: inputs.demo == 'both' || inputs.demo == 'b'
+        working-directory: demo-b
+        run: |
+          npx remotion render src/index.ts Vibe ../render/demo-b.mp4 \
+            --codec=h264 --concurrency=4 \
+            --browser-executable="$CHROME_PATH"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: render-${{ github.run_number }}
+          path: render/*.mp4
+          if-no-files-found: error
