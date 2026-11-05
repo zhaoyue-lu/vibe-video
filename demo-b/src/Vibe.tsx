@@ -91,7 +91,7 @@ export const Vibe: React.FC = () => {
                 <span
                   style={{
                     fontFamily:
-                      '"PingFang SC", "Hiragino Sans GB", "Helvetica Neue", sans-serif',
+                      '"PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Noto Sans SC", "Helvetica Neue", sans-serif',
                     fontSize: 148,
                     fontWeight: 700,
                     letterSpacing: '0.02em',
